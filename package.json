@@ -1,0 +1,18 @@
+{
+  "name": "randg",
+  "version": "1.0.0",
+  "description": "",
+  "main": "loader.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "johnny-five": "^2.0.0",
+    "node-fetch": "^2.6.1",
+    "path": "^0.12.7",
+    "serialport": "^9.0.2"
+  }
+}
