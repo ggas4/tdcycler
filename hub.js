@@ -16,14 +16,20 @@ const refreshRj = (lcd, conf) => {
     fetch('https://api.td2.info.pl:9640/?method=getTrainsOnline').then(r => r.json())
         .then((api) => {
             for (var i = 0; i < api.message.length; i++) {
-
-                if (typeof api.message[i].region != 'undefined') Rj.refreshRjData(lcd, conf, api.message[i].region)
-
-                setInterval(() => {
-                    if (typeof api.message[i].region != 'undefined') Rj.refreshRjData(lcd, conf, api.message[i].region)
-                }, 30000)
+                if (typeof api.message != 'undefined') Rj.refreshRjData(lcd, conf, api.message[i].region)
             }
         })
+        
+    setInterval(() => {
+        fetch('https://api.td2.info.pl:9640/?method=getTrainsOnline').then(r => r.json())
+            .then((api) => {
+                for (var i = 0; i < api.message.length; i++) {
+
+                    if (typeof api.message != 'undefined') Rj.refreshRjData(lcd, conf, api.message[i].region)
+
+                }
+            })
+    }, 30000)
 }
 
 const refreshClock = (lcd, config) => {
