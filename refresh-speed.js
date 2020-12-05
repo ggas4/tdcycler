@@ -1,5 +1,21 @@
 module.exports = (lcd, config) => {
 
+    const getSpeed = () => {
+        fetch('https://api.td2.info.pl:9640/?method=getTrainsOnline').then(res => res.json())
+            .then((json) => {
+                var v = 0
+
+                for (var i = 0; i < json.message.length; i++) {
+                    if (json.message[i].trainNo == config.trainno) {
+                        v = json.message[i].dataSpeed
+                    }
+                }
+
+                printSpeed(v)
+            })
+
+    }
+
     const SerialPort = require('serialport')
     const td2 = new SerialPort(config.tdport)
     const fetch = require('node-fetch')
@@ -24,41 +40,18 @@ module.exports = (lcd, config) => {
 
     switch (config.speed) {
         case SWDR:
-            fetch('https://api.td2.info.pl:9640/?method=getTrainsOnline').then(res => res.json())
-                .then((json) => {
+            getSpeed()
+            
+            setInterval(() => {
+                if (ticks == 10) {
+                    getSpeed()
+                    ticks = 0
+                }
 
-                    var v = 0
+                ticks++
 
-                    for (var i = 0; i < json.message.length; i++) {
-                        if (json.message[i].trainNo == config.trainno) {
-                            v = json.message[i].dataSpeed
-                        }
-                    }
+            }, 5000);
 
-                    printSpeed(v)
-
-                    setInterval(() => {
-                        if (ticks == 10) {
-                            fetch('https://api.td2.info.pl:9640/?method=getTrainsOnline').then(res => res.json())
-                                .then((json) => {
-                                    var v = 0
-
-                                    for (var i = 0; i < json.message.length; i++) {
-                                        if (json.message[i].trainNo == config.trainno) {
-                                            v = json.message[i].dataSpeed
-                                        }
-                                    }
-
-                                    printSpeed(v)
-                                })
-
-                            ticks = 0
-                        }
-
-                        ticks++
-
-                    }, 5000);
-                })
             break
         case PC:
 

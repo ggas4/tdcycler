@@ -3,13 +3,18 @@ const fetch = require('node-fetch')
 const refreshClock = require('./refresh-clock')
 const refreshSpeed = require('./refresh-speed')
 const refreshRj = require('./refresh-rj')
+const showmainmenu = require('./main-menu')
+const SETCLOCK = 0, SETSPEED = 1, MAINVIEW = 2, MAINMENU = 3
+let view
 
 const showmainscr = (scr, cfg) => {
-    scr.clear()
+    if (view == MAINVIEW) {
+        scr.clear()
 
-    refreshClock(scr, cfg)
-    refreshSpeed(scr, cfg)
-    refreshRj(scr, cfg)
+        refreshClock(scr, cfg)
+        refreshSpeed(scr, cfg)
+        refreshRj(scr, cfg)
+    }
 }
 
 const selectClock = (sel, scr) => {
@@ -36,8 +41,9 @@ const selectSpeedometer = (sel, scr) => {
 
 module.exports = (brd, scr, conf) => {
     const J5 = require('johnny-five')
-    const SETCLOCK = 0, SETSPEED = 1, MAINVIEW = 2
-    var sel = 1, view = SETCLOCK
+
+    var sel = 1
+    view = SETCLOCK
 
     scr.clear()
     const F1 = new J5.Button({
@@ -73,7 +79,7 @@ module.exports = (brd, scr, conf) => {
             if (view == SETCLOCK) {
                 conf.clock = sel
                 sel = 1
-                
+
                 scr.clear()
                 scr.print('Wybierz pr-mierz')
                 selectSpeedometer(sel, scr)
@@ -84,11 +90,11 @@ module.exports = (brd, scr, conf) => {
 
             if (view == SETSPEED) {
                 conf.speed = sel
-                showmainscr(scr, conf)
 
                 setTimeout(() => {
                     console.log(conf)
                     view = MAINVIEW
+                    showmainscr(scr, conf)
                 }, 50)
             }
         }, 20)
